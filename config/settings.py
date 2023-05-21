@@ -30,6 +30,15 @@ ALLOWED_HOSTS = []
 
 # Application definition
 
+CUSTOM_APPS = [
+    "finance_app",
+]
+
+THIRD_PARTY_APPS = [
+    "rest_framework",
+    *(["drf_spectacular",] if DEBUG else []),
+]
+
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
@@ -37,7 +46,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-]
+] + THIRD_PARTY_APPS + CUSTOM_APPS
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -105,7 +114,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'Asia/Dushanbe'
 
 USE_I18N = True
 
