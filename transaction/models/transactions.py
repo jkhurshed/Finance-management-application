@@ -8,11 +8,12 @@ class Transaction(models.Model):
         ('income', 'Income'),
     )
 
-    user = models.ForeignKey(User, on_delete=models.CASCADE, 
-        verbose_name="User")
+    wallet = models.ForeignKey("finance_app.wallet", on_delete=models.CASCADE, 
+        verbose_name="wallet")
     transaction_type = models.CharField(max_length=10, choices=TRANSACTION_TYPE_CHOICES)
     amount = models.DecimalField(max_digits=10, decimal_places=2)
-    note = models.TextField("Description", blank=True)
+    description = models.TextField("Description", blank=True)
     transaction_date = models.DateTimeField("Transaction date", auto_now_add=True)
     category = models.ForeignKey("finance_app.category", on_delete=models.CASCADE, 
-        related_name="user", verbose_name="User")
+        related_name="catefory", verbose_name="Category")
+    
