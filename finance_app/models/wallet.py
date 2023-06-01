@@ -17,7 +17,7 @@ class Wallet(models.Model):
 
     title = models.CharField("Wallet title", max_length=100)
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, 
-        verbose_name="User")
+        verbose_name="User", related_name="wallets")
     description = models.CharField("Wallet description", max_length=250, blank=True)
     currency = models.CharField("Currency list", choices=CURRENCY_CHOICES, max_length=10)
     wallet_balance = models.DecimalField("Wallet balance", max_digits=8, decimal_places=2)

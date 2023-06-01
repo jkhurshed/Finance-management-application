@@ -2,20 +2,6 @@ from django.db import models
 
 class Category(models.Model):
 
-    '''CATEGORY_CHOICES = (
-        ('car', 'Car'),
-        ('clothing', 'Clothing'),
-        ('domiciliary', 'Domiciliary'),
-        ('health and beauty', 'Health and Beauty'),
-        ('kids', 'Kids'),
-        ('leisure', 'Leisure'),
-        ('sport', 'Sport'),
-        ('supermarket', 'Supermarket'),
-        ('transport', 'Transport'),
-        ('travels', 'Travels'),
-        ('not categorized', 'Not categorized'),
-    )'''
-
     title = models.CharField("Title", max_length=70)
     parent = models.ForeignKey("self", 
                                on_delete=models.CASCADE, 
@@ -31,3 +17,16 @@ class Category(models.Model):
     def __str__(self) -> str:
         return self.title
     
+    '''CATEGORY_CHOICES = (
+        ('car', 'Car'),
+        ('clothing', 'Clothing'),
+        ('domiciliary', 'Domiciliary'),
+        ('health and beauty', 'Health and Beauty'),
+        ('kids', 'Kids'),
+        ('leisure', 'Leisure'),
+        ('sport', 'Sport'),
+        ('supermarket', 'Supermarket'),
+        ('transport', 'Transport'),
+        ('travels', 'Travels'),
+        ('not categorized', 'Not categorized'),
+    )'''

@@ -7,4 +7,5 @@ class TransactionAdmin(admin.ModelAdmin):
     model = Transaction
     list_display = ("id", "wallet", "transaction_type", "amount", "description", 
                     "transaction_date", "category")
+    list_display_links = ("wallet", )
 

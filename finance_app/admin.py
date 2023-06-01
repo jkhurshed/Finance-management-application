@@ -9,9 +9,9 @@ class WalletAdmin(admin.ModelAdmin):
 
     model = Wallet
     list_display = ("id", "title", "user", "description", "currency", "wallet_balance")
-    list_filter = ("user",)
-    search_fields = ("user",)
-    list_display_links = ("user",)
+    list_filter = ("title",)
+    search_fields = ("title",)
+    list_display_links = ("title",)
     list_per_page = 10
 
 @admin.register(Category)
