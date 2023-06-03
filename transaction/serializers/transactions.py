@@ -3,6 +3,7 @@ from rest_framework.response import Response
 from rest_framework import status, serializers
 
 from ..models import Transaction
+from django.db import transaction as dj_transaction
 from finance_app.models import Category
 
 from decimal import Decimal
@@ -38,24 +39,29 @@ class TransactionExpenseSerializer(ModelSerializer):
         if wallet is None:
             raise ValidationError("User does not have any wallet")
         
+        self._wallet = wallet
+        
         if wallet.wallet_balance < Decimal(self.initial_data["amount"]):
             raise ValidationError("Insufficient balance.")
+        elif Decimal(self.initial_data["amount"]) <= 0:
+            raise ValidationError("Improperly value.")
         return data
     
     def create_transaction(self, validated_data):
         category_id = validated_data.pop('category_id')
         category = Category.objects.get(pk=category_id)
-        wallet = self.context['user'].wallets.first()
+        wallet = self._wallet
 
-        transaction = Transaction.objects.create(
-            wallet=wallet,
-            category=category,
-            amount=validated_data['amount'],
-            description=validated_data.get('description', '')
-        )
+        with dj_transaction.atomic():
+            transaction = Transaction.objects.create(
+                wallet=wallet,
+                category=category,
+                amount=validated_data['amount'],
+                description=validated_data.get('description', '')
+            )
 
-        wallet.wallet_balance -= transaction.amount
-        wallet.save()
+            wallet.wallet_balance -= transaction.amount
+            wallet.save()
 
         return transaction
 
@@ -79,13 +85,15 @@ class TransactionIncomeSerializer(ModelSerializer):
         if wallet is None:
             raise ValidationError("User does not have any wallet")
         
+        self._wallet = wallet
+        
         if Decimal(self.initial_data["amount"]) <= 0:
             raise ValidationError("Inproperly value.")
         return data
     
     def create_transaction(self, validated_data):
 
-        wallet = self.context['user'].wallets.first()
+        wallet = self._wallet
 
         transaction = Transaction.objects.create(
             wallet=wallet,
