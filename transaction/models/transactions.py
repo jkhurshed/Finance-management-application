@@ -1,12 +1,7 @@
 from django.db import models
-from django.contrib.auth.models import User
+from ..choices import TRANSACTION_TYPE_CHOICES
 
 class Transaction(models.Model):
-
-    TRANSACTION_TYPE_CHOICES = (
-        ('expense', 'Expense'),
-        ('income', 'Income'),
-    )
 
     wallet = models.ForeignKey("finance_app.wallet", on_delete=models.CASCADE, 
         verbose_name="wallet")

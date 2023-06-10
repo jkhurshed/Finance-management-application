@@ -1,9 +1,10 @@
 from rest_framework.serializers import ModelSerializer, ValidationError
 from rest_framework.response import Response
 from rest_framework import status, serializers
+from django.db import transaction as dj_transaction
 
 from ..models import Transaction
-from django.db import transaction as dj_transaction
+from ..choices import TRANSACTION_TYPE_CHOICES
 from finance_app.models import Category
 
 from decimal import Decimal
@@ -19,12 +20,8 @@ class TransactionDetailSerializer(ModelSerializer):
 
 class TransactionExpenseSerializer(ModelSerializer):
     
-    TRANSACTION_TYPE_CHOICES = [
-        ('income', 'Income'),
-        ('expense', 'Expense'),
-    ]
-
-    transactions_type = serializers.ChoiceField(choices=TRANSACTION_TYPE_CHOICES, default='expense')
+    transactions_type = serializers.ChoiceField(choices=TRANSACTION_TYPE_CHOICES, 
+                                                default=TRANSACTION_TYPE_CHOICES[1][0])
     category_id = serializers.PrimaryKeyRelatedField(queryset=Category.objects.all(), 
                                                      source='category', write_only=True)
 
@@ -35,6 +32,7 @@ class TransactionExpenseSerializer(ModelSerializer):
     def validate(self, attrs):
         data = super().validate(attrs)
         wallet = self.context["user"].wallets.first()
+        # wallet = self.context["user"].wallets.get(pk=data.get("wallet_id"))
 
         if wallet is None:
             raise ValidationError("User does not have any wallet")
@@ -68,12 +66,9 @@ class TransactionExpenseSerializer(ModelSerializer):
 
 class TransactionIncomeSerializer(ModelSerializer):
 
-    TRANSACTION_TYPE_CHOICES = [
-        ('income', 'Income'),
-        ('expense', 'Expense'),
-    ]
-
-    transactions_type = serializers.ChoiceField(choices=TRANSACTION_TYPE_CHOICES, default='income')
+    transactions_type = serializers.ChoiceField(choices=TRANSACTION_TYPE_CHOICES, 
+                                                default=TRANSACTION_TYPE_CHOICES[0][0])
+    
     class Meta:
         model = Transaction
         fields = ("transactions_type", "wallet", "amount", "description")
